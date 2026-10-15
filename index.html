@@ -1,18 +1,578 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Funny Website</title>
+    <title>The Secret Squad Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 620px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* ===== SETUP PAGE ===== */
+        #setupStage .group-photo-area {
+            width: 100%;
+            height: 190px;
+            border: 3px dashed #f39c12;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.05);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #setupStage .group-photo-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #setupStage .group-photo-area .placeholder {
+            color: #f39c12;
+            font-size: 16px;
+        }
+
+        #setupStage .group-photo-area .placeholder .icon {
+            font-size: 50px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .name-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .name-input-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 12px;
+        }
+
+        .name-input-item label {
+            display: block;
+            font-size: 12px;
+            color: #f39c12;
+            margin-bottom: 5px;
+        }
+
+        .name-input-item input {
+            width: 85%;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            text-align: center;
+            font-size: 15px;
+            background: rgba(255,255,255,0.9);
+        }
+
+        /* ===== VOTING PAGE ===== */
+        #question {
+            font-size: 22px;
+            font-weight: bold;
+            min-height: 60px;
+        }
+
+        .question-number {
+            color: #f39c12;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .player-btn {
+            padding: 15px 10px;
+            font-size: 16px;
+            border: 3px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .player-btn:hover {
+            transform: scale(1.05);
+            border-color: #f39c12;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .player-btn.voted {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .player-btn .player-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 8px auto;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .player-btn .player-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* ===== RESULT PAGE ===== */
+        #resultEmoji {
+            font-size: 75px;
+            margin: 15px 0;
+        }
+
+        #resultText {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        #resultDetail {
+            font-size: 17px;
+            color: #ccc;
+        }
+
+        .votes-breakdown {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 14px;
+            color: #aaa;
+            text-align: left;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 14px 35px;
+            font-size: 17px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #eb3349, #f45c43);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #progress {
+            color: #f39c12;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        footer {
+            color: #555;
+            font-size: 12px;
+            margin-top: 25px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to My Funny Website! 🎉</h1>
-    <p> Bersaaaaaa do you wanna laugh???NO???? IGH FUCK YOU!. Go and click the MF button below!</p> 
-    <button onclick="BERSAAAA()">Click for a Joke</button>
-    <p id="YE AM joke"></p>
 
-    <script>
-        function BERSAAAA() {
-            document.getElementById("YE AM joke").innerHTML = "Why did the chicken cross the road? 🐔 To get to the other side!";
+<div class="container">
+
+    <h1>🎭 Secret Squad Game</h1>
+    <p class="subtitle">Vote in secret. Reveal with chaos.</p>
+
+    <!-- ================================================================ -->
+    <!-- ===== SETUP PAGE - FIRST SCREEN WITH GROUP PHOTO ===== -->
+    <!-- ================================================================ -->
+    <div class="card" id="setupStage">
+        
+        <!-- ===== GROUP PHOTO UPLOAD AREA ===== -->
+        <!-- Click this box to upload your squad's group photo -->
+        <div class="group-photo-area" id="groupPhotoArea" onclick="document.getElementById('groupPhotoInput').click()">
+            <div class="placeholder" id="groupPlaceholder">
+                <span class="icon">📸</span>
+                Click to upload your squad photo
+            </div>
+            <img id="groupPreview" style="display:none;">
+        </div>
+        <input type="file" id="groupPhotoInput" accept="image/*" style="display:none;" onchange="uploadGroupPhoto(event)">
+        <p style="color:#777; font-size:12px; margin-top:-10px;">Upload a group photo of all 4 of you!</p>
+
+        <h2 style="color: #fff; font-size: 20px; margin-top: 5px;">👋 GA</h2>
+        <p style="color: #aaa; font-size: 13px;">You + your 3 best friends</p>
+
+        <!-- ===== NAME INPUT FIELDS ===== -->
+        <!-- 📸 EDIT THESE: Change the "value" to your friends' real names -->
+        <div class="name-input-group">
+            <div class="name-input-item">
+                <label>🦊 Friend 1</label>
+                <input type="text" id="name1" placeholder="Name" value="ROBE">  <!-- ← 📸 EDIT: Friend 1's name -->
+            </div>
+            <div class="name-input-item">
+                <label>🐼 Friend 2</label>
+                <input type="text" id="name2" placeholder="Name" value="BERSA">    <!-- ← 📸 EDIT: Friend 2's name -->
+            </div>
+            <div class="name-input-item">
+                <label>🐨 Friend 3</label>
+                <input type="text" id="name3" placeholder="Name" value="SOLI"> <!-- ← 📸 EDIT: Friend 3's name -->
+            </div>
+            <div class="name-input-item">
+                <label>🦁 You</label>
+                <input type="text" id="name4" placeholder="Name" value="FIRE">    <!-- ← 📸 EDIT: Your name -->
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="startGame()">🎮 Start the Game!</button>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- ===== GAME AREA ===== -->
+    <!-- ================================================================ -->
+    <div id="gameArea" class="hidden">
+
+        <div class="card">
+            <div class="question-number" id="questionNumber">Question 1 of 5</div>
+            <p id="question">Loading...</p>
+        </div>
+
+        <!-- VOTE STAGE -->
+        <div class="card" id="voteStage">
+            <p style="color: #aaa; font-size: 15px;">🤫 Who does this question suit best?</p>
+            <p style="color: #f39c12; font-size: 13px;" id="voteStatus">Waiting for votes...</p>
+            <div class="players-grid" id="playersGrid"></div>
+            <p id="progress">Votes: 0/4</p>
+        </div>
+
+        <!-- RESULT STAGE -->
+        <div class="card" id="resultStage" style="display:none;">
+            <div id="resultEmoji">🎉</div>
+ n            <p id="resultText">The verdict is in!</p>
+            <p id="resultDetail">Loading...</p>
+            <div class="votes-breakdown" id="votesBreakdown"></div>
+            <button class="btn btn-primary" onclick="nextQuestion()">➡️ Next Question</button>
+            <button class="btn btn-danger btn-small" onclick="resetGame()">🔄 Reset Game</button>
+        </div>
+
+    </div>
+
+    <footer>🤫 What happens in the squad game stays in the squad game</footer>
+</div>
+
+<script>
+    // ===================================================================
+    // ===== 📸 EDIT YOUR FRIENDS' NAMES AND PHOTOS HERE =====
+    // ===================================================================
+    //
+    // INSTRUCTIONS:
+    // 1. Save each friend's photo in the SAME folder as this HTML file
+    // 2. Write the EXACT filename including extension (.jpg, .png, etc.)
+    // 3. If you don't have a photo yet, leave it empty: photo: ""
+    //    The code will show the emoji instead
+    // 4. Change the name to each friend's real name
+    //
+    // EXAMPLE:
+    //   { name: "Emma", emoji: "🦊", photo: "emma.jpg" }
+    //
+    // ===================================================================
+
+    const defaultPlayers = [
+        // ----- Friend 1 -----
+        { 
+            name: "ROBE",      // ← 📸 EDIT: Friend 1's real name
+            emoji: "🦊",        // ← Optional: change emoji
+            photo: "ROBE.jpg" // ← 📸 EDIT: Friend 1's photo filename (e.g., "alice.jpg")
+        },
+        // ----- Friend 2 -----
+        { 
+            name: "BERSA",        // ← 📸 EDIT: Friend 2's real name
+            emoji: "🐼",        // ← Optional: change emoji
+            photo: "BERSA.jpg" // ← 📸 EDIT: Friend 2's photo filename (e.g., "bob.png")
+        },
+        // ----- Friend 3 -----
+        { 
+            name: "SOLI",    // ← 📸 EDIT: Friend 3's real name
+            emoji: "🐨",        // ← Optional: change emoji
+            photo: "SOLI.jpg" // ← 📸 EDIT: Friend 3's photo filename (e.g., "charlie.jpeg")
+        },
+        // ----- You -----
+        { 
+            name: "FIRE",        // ← 📸 EDIT: Your real name
+            emoji: "🦁",        // ← Optional: change emoji
+            photo: "FIRE.jpg"    // ← 📸 EDIT: Your photo filename (e.g., "me.jpg")
         }
-    </script>
+    ];
+
+    // ===================================================================
+    // ===== DO NOT CHANGE ANYTHING BELOW THIS LINE =====
+    // ===== (Unless you know JavaScript) =====
+    // ===================================================================
+
+    let players = [];
+    let currentQuestionIndex = 0;
+    let votes = {};
+    let voters = [];
+    let totalQuestions = 5;
+    let groupPhotoData = null;
+const questions = [
+        "Who is most likely to fall asleep in class? 😴",
+        "Who would forget their own birthday? 🎂",
+        "Who pulls more guy? 💬",
+        "Who is the messiest eater? 🍝",
+        "Who takes the longest to get ready? ⏰",
+        "Who is most likely to get lost? 🗺️",
+        "Who laughs at their own jokes? 😂",
+        "Who is the best dancer? 💃",
+        "Who is most likely to cry during a movie? 🎬",
+        "Who sends the most random memes? 📱",
+        "Who would survive the longest on a deserted island? 🏝️",
+        "Who has the weirdest habit? 🤔",
+        "Who is most likely to become famous? ⭐",
+        "Who is the worst secret keeper? 🤐",
+        "Who would be the villain in a movie? 🦹",
+        "Who is the biggest procrastinator? 📚",
+        "Who is most likely to accidentally start a fire? 🔥",
+        "Who has the most controversial opinion? 🗣️",
+        "Who would betray the squad for money? 💸",
+        "Who is the squad's chaotic energy? 🤪",
+        "Who is the most selfish ?",
+        "Who is the most manipulative?",
+        "Who is most attractive?",
+        "Who is most likely to ghost friend?",
+        "Who has biggest ego?",
+        "Who has worst test in partners?",
+        "Who is most likely to cheat?",
+        "Who has the prettiest smile?",
+        "Who is most supportive?",
+        "Who smells the nicest?",
+        "Who has the potential to host party,bzawm let's host party mslegnnn"
+    ];
+  
+    // Group photo upload
+    function uploadGroupPhoto(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            groupPhotoData = e.target.result;
+            document.getElementById('groupPlaceholder').style.display = 'none';
+            const img = document.getElementById('groupPreview');
+            img.src = e.target.result;
+            img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function startGame() {
+        const names = [
+            document.getElementById('name1').value || defaultPlayers[0].name,
+            document.getElementById('name2').value || defaultPlayers[1].name,
+            document.getElementById('name3').value || defaultPlayers[2].name,
+            document.getElementById('name4').value || defaultPlayers[3].name
+        ];
+
+        players = defaultPlayers.map((p, i) => ({
+            name: names[i],
+            emoji: p.emoji,
+            photo: p.photo,
+            id: i
+        }));
+
+        document.getElementById('setupStage').classList.add('hidden');
+        document.getElementById('gameArea').classList.remove('hidden');
+
+        currentQuestionIndex = 0;
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        votes = {};
+        voters = [];
+
+        const qIndex = currentQuestionIndex % questions.length;
+        document.getElementById('questionNumber').innerText = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+        document.getElementById('question').innerText = questions[qIndex];
+
+        document.getElementById('voteStage').style.display = 'block';
+        document.getElementById('resultStage').style.display = 'none';
+
+        renderPlayers();
+        updateVoteStatus();
+    }
+
+    function renderPlayers() {
+        const grid = document.getElementById('playersGrid');
+        grid.innerHTML = '';
+        
+        players.forEach(player => {
+            const btn = document.createElement('button');
+            btn.className = 'player-btn';
+            btn.id = `player-${player.id}`;
+
+            // Show photo if available, otherwise show emoji
+            let photoHtml;
+            if (player.photo && player.photo !== "") {
+                photoHtml = `<img class="player-photo" src="${player.photo}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" alt="${player.name}"><span style="font-size:35px; display:none;">${player.emoji}</span>`;
+            } else {
+                photoHtml = `<span style="font-size:50px; display:block; margin-bottom:5px;">${player.emoji}</span>`;
+            }
+            
+            btn.innerHTML = `${photoHtml}<span class="player-name">${player.name}</span>`;
+            btn.onclick = () => vote(player.id);
+            grid.appendChild(btn);
+        });
+    }
+
+    function vote(playerId) {
+        if (voters.includes(playerId)) return;
+        voters.push(playerId);
+
+        let targetId;
+        do {
+            targetId = Math.floor(Math.random() * players.length);
+        } while (targetId === playerId);
+
+        votes[playerId] = targetId;
+        document.getElementById(`player-${playerId}`).classList.add('voted');
+        updateVoteStatus();
+
+        if (voters.length === 4) {
+            setTimeout(() => revealResults(), 800);
+        }
+    }
+
+    function updateVoteStatus() {
+        document.getElementById('voteStatus').innerText = 
+            voters.length < 4 ? `🤫 ${voters.length}/4 have voted...` : '✅ Everyone has voted!';
+        document.getElementById('progress').innerText = `Votes: ${voters.length}/4`;
+    }
+
+    function revealResults() {
+        document.getElementById('voteStage').style.display = 'none';
+        document.getElementById('resultStage').style.display = 'block';
+
+        const voteCount = {};
+        players.forEach(p => voteCount[p.id] = 0);
+        Object.values(votes).forEach(targetId => {
+            voteCount[targetId] = (voteCount[targetId] || 0) + 1;
+        });
+
+        let maxVotes = 0;
+        let winners = [];
+        players.forEach(p => {
+            if (voteCount[p.id] > maxVotes) {
+                maxVotes = voteCount[p.id];
+                winners = [p];
+            } else if (voteCount[p.id] === maxVotes) {
+                winners.push(p);
+            }
+        });
+
+        const winner = winners[Math.floor(Math.random() * winners.length)];
+        const dramaEmojis = ['🎉', '🔥', '👑', '💀', '🤡', '🏆', '😱', '🙌'];
+        const dramaPhrases = ["The squad has spoken!", "It's official!", "No surprises here!", "The truth hurts!", "Verdict delivered!"];
+
+        document.getElementById('resultEmoji').innerText = dramaEmojis[Math.floor(Math.random() * dramaEmojis.length)];
+        document.getElementById('resultText').innerText = `${winner.emoji} ${winner.name}!`;
+        document.getElementById('resultDetail').innerText = 
+            `${dramaPhrases[Math.floor(Math.random() * dramaPhrases.length)]} ${winner.name} got ${maxVotes} vote${maxVotes > 1 ? 's' : ''}!`;
+
+        let breakdownHTML = '<strong>📊 Vote Breakdown:</strong><br>';
+        players.forEach(p => {
+            const stars = '⭐'.repeat(voteCount[p.id] || 0) || '❌';
+            breakdownHTML += `${p.emoji} ${p.name}: ${stars} (${voteCount[p.id] || 0})<br>`;
+        });
+        document.getElementById('votesBreakdown').innerHTML = breakdownHTML;
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex >= totalQuestions) {
+            document.getElementById('resultStage').innerHTML = `
+                <h2>🎊 Game Over!</h2>
+                <p style="font-size: 60px;">🥳</p>
+                <p>You completed all ${totalQuestions} questions!</p>
+                <button class="btn btn-primary" onclick="resetGame()">🔄 Play Again</button>
+            `;
+            return;
+        }
+        loadQuestion();
+    }
+
+    function resetGame() {
+        currentQuestionIndex = 0;
+        document.getElementById('gameArea').classList.add('hidden');
+        document.getElementById('setupStage').classList.remove('hidden');
+    }
+</script>
+
 </body>
 </html>
